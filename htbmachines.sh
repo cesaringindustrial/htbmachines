@@ -37,8 +37,28 @@ function searchMachine(){
 }
 
 function updateFiles(){
+  
+  if [ ! -f bundle.js ]; then
+  tput civis
+  echo -e "\n${yellowColour}[+]${endColour}${grayColour} Descargando archivos necesarios...${endColour}"
   curl -s $main_url > bundle.js
   js-beautify bundle.js | sponge bundle.js
+  echo -e "\n${yellowColour}[+]${endColour}${grayColour} Todos los archivos han sido descargados${endColour}"
+  tput cnorm  
+else
+     curl -s $main_url > bundle_tmp.js
+      js-beautify bundle_tmp.js | sponge bundle_tmp.js
+      md5_tpm_value=$(md5sum bundle_tmp.js | awk '{print $1}')
+      md5_original_value=$(md5sum bundle.js | awk '{print $1}')
+      
+      if [ "$md5_original_value" == "$md5_tpm_value" ];then
+        echo -e "\n ${yellowColour}[+]${endColour}${grayColour} No hay actualizaciones CRACK :)${endColour}"
+
+      else
+        echo -e "${yellowColour}[+]${endColour}${grayColour} hay actualizaciones${endColour}"
+        rm bundle.js && mv bundle_tmp.js bundle.js
+       fi
+  fi
 }
 #indicadores
 declare -i parameter_counter=0
