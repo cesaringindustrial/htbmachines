@@ -20,6 +20,8 @@ function ctrl_c(){
 #Ctrl+Copyright (c) 
 trap ctrl_c INT
 
+#funciones globales
+main_url="https://htbmachines.github.io/bundle.js"
 
 function helpPanel(){
   echo -e "\n ${yellowColour}[+]${endColour}${grayColour} Uso: ${endColour}"
@@ -35,7 +37,8 @@ function searchMachine(){
 }
 
 function updateFiles(){
-  echo -e "\n [+] Comenzamos con las actualizaciones\n"
+  curl -s $main_url > bundle.js
+  js-beautify bundle.js | sponge bundle.js
 }
 #indicadores
 declare -i parameter_counter=0
